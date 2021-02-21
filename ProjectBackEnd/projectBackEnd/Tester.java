@@ -7,10 +7,10 @@ public class Tester {
 		Collection col1 = new Collection("./projectBackEnd/finalTracks.csv");
 		
 		// Remove Test: Remove a song based on ID
-		
+		col1.removeSong(2);
 		
 		// End Test1: Write to different file
-		col1.writeFile("./projectBackEnd/textWrite.txt");
+		col1.writeFile("./projectBackEnd/textWrite.csv");
 		
 		// End Test2: Write to same file
 //		col1.writeFile("./projectBackEnd/textWrite.txt");

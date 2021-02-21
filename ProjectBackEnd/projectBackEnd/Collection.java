@@ -33,8 +33,10 @@ public class Collection {
 	public void removeSong(int i) {
 		Iterator<Song> itr = list.iterator();
 		while(itr.hasNext()) {
-			if (itr.next().getId() == i)
-				this.list.remove(itr.next());
+			Song s = itr.next();
+			if (s.getId() == i)
+				this.list.remove(s);
+			return;
 		}
 	}
 	
