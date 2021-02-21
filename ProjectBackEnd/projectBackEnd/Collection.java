@@ -30,11 +30,15 @@ public class Collection {
 		this.list.add(newSong);
 	}
 	
-	public void removeSong(Song newSong) {
-		this.list.remove(list.indexOf(newSong));
+	public void removeSong(int i) {
+		Iterator<Song> itr = list.iterator();
+		while(itr.hasNext()) {
+			if (itr.next().getId() == i)
+				this.list.remove(itr.next());
+		}
 	}
 	
-	public Iterator<Song> iterator(){
+	public Iterator<Song> iterator() {
 		Iterator<Song> itr = list.iterator();
 		return itr;
 	}
@@ -81,23 +85,23 @@ public class Collection {
 			}
 		} catch (Exception e) {
 			System.err.println("there was a problem with the file reader, try different read type.");
-//			try {
-//				lineReader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(fileName.substring(1))));
-//				String line = null;
-//				while ((line = lineReader.readLine())!=null) {
-//					String[] tokens = line.split(",");
-//					addSong(new Song(Integer.parseInt(tokens[0]),tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
-//				}
-//			} catch (Exception e2) {
-//				System.err.println("there was a problem with the file reader, try again.  either no such file or format error");
-//			} finally {
-//				if (lineReader != null)
-//					try {;
-//						lineReader.close();
-//					} catch (IOException e2) {
-//						System.err.println("could not close BufferedReader");
-//					}
-//			}			
+			try {
+				lineReader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(fileName.substring(1))));
+				String line = null;
+				while ((line = lineReader.readLine())!=null) {
+					String[] tokens = line.split(",");
+					addSong(new Song(Integer.parseInt(tokens[0]),tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
+				}
+			} catch (Exception e2) {
+				System.err.println("there was a problem with the file reader, try again.  either no such file or format error");
+			} finally {
+				if (lineReader != null)
+					try {;
+						lineReader.close();
+					} catch (IOException e2) {
+						System.err.println("could not close BufferedReader");
+					}
+			}			
 		} finally {
 			if (lineReader != null)
 				try {
@@ -124,19 +128,19 @@ public class Collection {
 		// this method writes all of the data in the persons array to a file
 		try
 		{
-
 			FileWriter fw = new FileWriter(fn);
 			BufferedWriter myOutfile = new BufferedWriter(fw);			
 			
 			Iterator<Song> itr = list.iterator();
 			while(itr.hasNext()) {
-				myOutfile.write (itr.next().getId() + ",");
-				myOutfile.write (itr.next().getArtist()+ ",");
-				myOutfile.write (itr.next().getGenre()+ ",");
-				myOutfile.write (itr.next().getTrack()+ ",");
-				myOutfile.write (itr.next().getAlbum()+ ",");
-				myOutfile.write (itr.next().getYear()+ ",");
-				myOutfile.write (String.valueOf((itr.next().getLong())) + "\n");
+				Song s = itr.next();
+				myOutfile.write (s.getId() + ",");
+				myOutfile.write (s.getArtist()+ ","); 
+				myOutfile.write (s.getGenre()+ ",");
+				myOutfile.write (s.getTrack()+ ",");
+				myOutfile.write (s.getAlbum()+ ",");
+				myOutfile.write (s.getYear()+ ",");
+				myOutfile.write (String.valueOf((s.getLong())) + "\n");
 			}
 			myOutfile.flush();
 			myOutfile.close();
