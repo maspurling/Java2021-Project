@@ -31,6 +31,17 @@ public class Song {
 		longitude = l;
 	}
 	
+	// Constructor for reading after first time
+	public Song(int i, String a, String g, String t, String b, int y, String l) {
+		id = i;
+		artist = a;
+		genre = g;
+		track = t;
+		album = b;
+		year = y;
+		longitude = Double.parseDouble(l);
+	}
+	
 	// Getters & Setters
 	public int getId() {
 		return id;
