@@ -1,7 +1,7 @@
 package projectBackEnd;
 
 public class Song {
-	private int id;
+	private String id;
 	private String artist;
 	private String genre;
 	private String track;
@@ -11,7 +11,7 @@ public class Song {
 	
 	// Default Constructor
 	public Song() {
-		id = 0;
+		id = "000000";
 		artist = "not set";
 		genre = "not set";
 		track = "not set";
@@ -21,7 +21,7 @@ public class Song {
 	}
 	
 	// Useful Constructor
-	public Song(int i, String a, String g, String t, String b, int y, double l) {
+	public Song(String i, String a, String g, String t, String b, int y, double l) {
 		id = i;
 		artist = a;
 		genre = g;
@@ -31,23 +31,12 @@ public class Song {
 		longitude = l;
 	}
 	
-	// Constructor for reading after first time
-	public Song(int i, String a, String g, String t, String b, int y, String l) {
-		id = i;
-		artist = a;
-		genre = g;
-		track = t;
-		album = b;
-		year = y;
-		longitude = Double.parseDouble(l);
-	}
-	
 	// Getters & Setters
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 	
-	public void setId(int i) {
+	public void setId(String i) {
 		id = i;
 	}
 	
@@ -100,6 +89,7 @@ public class Song {
 	}
 
 	// toString because every class NEEDS a toString
+	// Items seperated by space
 	public String toString() {
 		return id+" "+artist+" "+genre+" "+track+" "+album+" "+year+" "+longitude;
 	}

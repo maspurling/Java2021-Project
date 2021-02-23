@@ -15,13 +15,15 @@ public class Collection {
 	private ArrayList<Song> list;
 	private String fileName;
 	
+	// Default Constructor
 	public Collection() {
 		list = new ArrayList<Song>();
 		fileName = null;
 	}
 	
+	// Useful Constructor
 	public Collection(String fn) {
-		this();
+		this(); // Calls default constructor
 		fileName = fn;
 		readFile();
 	}
@@ -30,51 +32,83 @@ public class Collection {
 		this.list.add(newSong);
 	}
 	
-	public void removeSong(int i) {
+	// Remove a song using iterator
+	public void removeSong(String i) {
 		Iterator<Song> itr = list.iterator();
 		while(itr.hasNext()) {
 			Song s = itr.next();
-			if (s.getId() == i)
+			if (s.getId().equals(i))
 				this.list.remove(s);
 			return;
 		}
 	}
 	
+	// Return an iterator for list
 	public Iterator<Song> iterator() {
 		Iterator<Song> itr = list.iterator();
 		return itr;
 	}
 	
-	// Suggest a random song from an artist
-	public Song Input11() {
-		
+	// Suggest a song based on artist
+	public Song InputOneToOne(String a) {
+		Iterator<Song> itr = list.iterator();
+		while(itr.hasNext()) {
+			Song s = itr.next();
+			if (s.getArtist().equals(a)) {
+				return s;
+			}
+		}
 		return null;
 	}
 	
-	public Song InputM1() {
-		
+	// Suggest a song based on artist and album
+	public Song InputManyToOne(String a, String b) {
+		Iterator<Song> itr = list.iterator();
+		while(itr.hasNext()) {
+			Song s = itr.next();
+			if (s.getArtist().equals(a) && s.getAlbum().equals(b)) {
+				return s;
+			}
+		}
 		return null;
 	}
 	
-	public Song Input1M() {
-		
-		return null;
+	// Suggest many songs based on genre
+	public Collection InputOneToMany(String g) {
+		Iterator<Song> itr = list.iterator();
+		Collection temp = new Collection();
+		while(itr.hasNext()) {
+			Song s = itr.next();
+			if (s.getGenre().equals(g)) {
+				temp.addSong(s);
+			}
+		}
+		return temp;
 	}
 	
-	public Song InputMM() {
-		
-		return null;
+	// Suggest many songs based on genre and year
+	public Collection InputManyToMany(String g, int y) {
+		Iterator<Song> itr = list.iterator();
+		Collection temp2 = new Collection();
+		while(itr.hasNext()) {
+			Song s = itr.next();
+			if (s.getGenre().equals(g) && s.getYear() == y) {
+				temp2.addSong(s);
+			}
+		}
+		return temp2;
 	}
 	
-	
+	// toString method since every class needs one
 	public String toString() {
-		String toReturn = "";
+		String toReturn = "Song Collection:\n";
 		for (int i = 0; i < list.size(); i++) {
-			toReturn += "Song: "+list.get(i)+"\n";
+			toReturn += list.get(i)+"\n";
 		}
 		return toReturn;
 	}
 	
+	// Readfile method
 	private void readFile () {
 		BufferedReader lineReader = null;
 		try {
@@ -82,8 +116,9 @@ public class Collection {
 			lineReader = new BufferedReader(fr);
 			String line = null;
 			while ((line = lineReader.readLine())!=null) {
+				// Split line into tokens and then call addSong with the tokens
 				String[] tokens = line.split(",");
-				addSong(new Song(Integer.parseInt(tokens[0]),tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
+				addSong(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
 			}
 		} catch (Exception e) {
 			System.err.println("there was a problem with the file reader, try different read type.");
@@ -92,7 +127,7 @@ public class Collection {
 				String line = null;
 				while ((line = lineReader.readLine())!=null) {
 					String[] tokens = line.split(",");
-					addSong(new Song(Integer.parseInt(tokens[0]),tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
+					addSong(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
 				}
 			} catch (Exception e2) {
 				System.err.println("there was a problem with the file reader, try again.  either no such file or format error");
@@ -115,19 +150,19 @@ public class Collection {
 	}
 	
 	public void writeFile () {
-		// overloaded method: this calls doWrite with file used to read data
-		// use this for saving data between runs
+		// Overloaded method: this calls doWrite with file used to read data
+		// Use this for saving data between runs
 		doWrite(fileName);
-	} // end of writeFile method
+	} // End of writeFile method
 
 	public void writeFile(String altFileName) {
-		// overloaded method: this calls doWrite with different file name 
-		// use this for testing write
+		// Overloaded method: this calls doWrite with different file name 
+		// Use this for testing write
 		doWrite(altFileName);		
-	}// end of writeFile method
+	}// End of writeFile method
 	
 	private void doWrite(String fn) {
-		// this method writes all of the data in the persons array to a file
+		// This method writes all of the data in the persons array to a file
 		try
 		{
 			FileWriter fw = new FileWriter(fn);
