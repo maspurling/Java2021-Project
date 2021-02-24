@@ -28,32 +28,40 @@ public class Collection {
 		readFile();
 	}
 	
-	public void addSong(Song newSong) {
-		this.list.add(newSong);
+	// Adds song
+	public void addSong(Song s) {
+		this.list.add(s);
 	}
 	
-	// Remove a song using iterator
+	// Remove a Song based on ID
 	public void removeSong(String i) {
-		Iterator<Song> itr = list.iterator();
-		while(itr.hasNext()) {
-			Song s = itr.next();
-			if (s.getId().equals(i))
+		for (Song s : list) {
+			if (s.getId().equals(i)) {
 				this.list.remove(s);
-			return;
+				return;
+			}
 		}
 	}
 	
 	// Return an iterator for list
-	public Iterator<Song> iterator() {
-		Iterator<Song> itr = list.iterator();
-		return itr;
+	public Iterator<Song> getIterator() {
+		return list.iterator();
+	}
+	
+	// Get a Song based on Id
+	public Song getSong (String i) {
+		for (Song s : list) {
+			if (s.getId().equals(i)) {
+				Song toReturn = s;
+				return toReturn;
+			}
+		}
+		return null;
 	}
 	
 	// Suggest a song based on artist
 	public Song InputOneToOne(String a) {
-		Iterator<Song> itr = list.iterator();
-		while(itr.hasNext()) {
-			Song s = itr.next();
+		for (Song s : list) {
 			if (s.getArtist().equals(a)) {
 				return s;
 			}
@@ -63,9 +71,7 @@ public class Collection {
 	
 	// Suggest a song based on artist and album
 	public Song InputManyToOne(String a, String b) {
-		Iterator<Song> itr = list.iterator();
-		while(itr.hasNext()) {
-			Song s = itr.next();
+		for (Song s : list) {
 			if (s.getArtist().equals(a) && s.getAlbum().equals(b)) {
 				return s;
 			}
@@ -75,35 +81,31 @@ public class Collection {
 	
 	// Suggest many songs based on genre
 	public Collection InputOneToMany(String g) {
-		Iterator<Song> itr = list.iterator();
-		Collection temp = new Collection();
-		while(itr.hasNext()) {
-			Song s = itr.next();
+		Collection toReturn = new Collection();
+		for (Song s: list) {
 			if (s.getGenre().equals(g)) {
-				temp.addSong(s);
+				toReturn.addSong(s);
 			}
 		}
-		return temp;
+		return toReturn;
 	}
 	
 	// Suggest many songs based on genre and year
 	public Collection InputManyToMany(String g, int y) {
-		Iterator<Song> itr = list.iterator();
-		Collection temp2 = new Collection();
-		while(itr.hasNext()) {
-			Song s = itr.next();
+		Collection toReturn = new Collection();
+		for (Song s : list) {
 			if (s.getGenre().equals(g) && s.getYear() == y) {
-				temp2.addSong(s);
+				toReturn.addSong(s);
 			}
 		}
-		return temp2;
+		return toReturn;
 	}
 	
 	// toString method since every class needs one
 	public String toString() {
 		String toReturn = "Song Collection:\n";
-		for (int i = 0; i < list.size(); i++) {
-			toReturn += list.get(i)+"\n";
+		for (Song s : list) {
+			toReturn += s.toString() + "\n";
 		}
 		return toReturn;
 	}
@@ -168,9 +170,7 @@ public class Collection {
 			FileWriter fw = new FileWriter(fn);
 			BufferedWriter myOutfile = new BufferedWriter(fw);			
 			
-			Iterator<Song> itr = list.iterator();
-			while(itr.hasNext()) {
-				Song s = itr.next();
+			for (Song s: list) {
 				myOutfile.write (s.getId() + ",");
 				myOutfile.write (s.getArtist()+ ","); 
 				myOutfile.write (s.getGenre()+ ",");
@@ -179,6 +179,7 @@ public class Collection {
 				myOutfile.write (s.getYear()+ ",");
 				myOutfile.write (String.valueOf((s.getLong())) + "\n");
 			}
+
 			myOutfile.flush();
 			myOutfile.close();
 		}

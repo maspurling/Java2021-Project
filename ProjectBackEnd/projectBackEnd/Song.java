@@ -87,9 +87,17 @@ public class Song {
 	public void setLong(double l) {
 		longitude = l;
 	}
-
+	
+	// Check if two songs are equal based on Id
+	public boolean equals (Song rhs) {
+		if (rhs.id.equals(id)) {
+			return true;
+		}
+		return false;
+	}
+	
 	// toString because every class NEEDS a toString
-	// Items seperated by space
+	// Items separated by space
 	public String toString() {
 		return id+" "+artist+" "+genre+" "+track+" "+album+" "+year+" "+longitude;
 	}
