@@ -32,15 +32,15 @@ public class Tester {
 		editTest2.setGenre("Indie");
 		System.out.println(editTest2.getGenre() + "\n");
 		
-		// Query Test #1: Get a song based on artist 
-		System.out.println(col1.InputOneToOne("AWOL") + "\n");
-
 		// Iterator Test: Checks that the iterator works
 		Iterator<Song> itr = testCol.getIterator();
 		while (itr.hasNext()) {
 			System.out.println(itr.next());
 		}
 		System.out.println();
+		
+		// Query Test #1: Get a song based on artist 
+		System.out.println(col1.InputOneToOne("AWOL") + "\n");
 		
 		// Query Test #2: Get a song based on artist and album
 		System.out.println(col1.InputManyToOne("Fósforo", "Macondo") + "\n");
@@ -52,6 +52,6 @@ public class Tester {
 		System.out.println(col1.InputManyToMany("Psych-Folk", 2008) + "\n");
 		
 		// End Test2: Write to same file
-		col1.writeFile("./projectBackEnd/textWrite.txt");
+		col1.writeFile("./projectBackEnd/finalTracks.csv");
 	}
 }
