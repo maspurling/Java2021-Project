@@ -88,14 +88,6 @@ public class Song {
 		longitude = l;
 	}
 	
-	// Check if two songs are equal based on Id
-	public boolean equals (Song rhs) {
-		if (rhs.id.equals(id)) {
-			return true;
-		}
-		return false;
-	}
-	
 	// toString because every class NEEDS a toString
 	// Items separated by space
 	public String toString() {

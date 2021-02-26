@@ -21,7 +21,7 @@ public class Collection {
 		fileName = null;
 	}
 	
-	// Useful Constructor
+	// Useful Constructor using ReadFile
 	public Collection(String fn) {
 		this(); // Calls default constructor
 		fileName = fn;
@@ -103,7 +103,7 @@ public class Collection {
 	
 	// toString method since every class needs one
 	public String toString() {
-		String toReturn = "Song Collection:\n";
+		String toReturn = "";
 		for (Song s : list) {
 			toReturn += s.toString() + "\n";
 		}
