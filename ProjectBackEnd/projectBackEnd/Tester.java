@@ -34,31 +34,35 @@ public class Tester {
 		SongCol.removeSong("000002"); // Removes from actual SongCol! 
 		
 		
-		// Edit Tests: Getters & Setters using TEST COLLECTION.
-		Song editTest = testCol.getSong("000035");
-		System.out.println("Before Edits:\n" + testCol);		// Before Edits
-		editTest.setAlbum("NewAlb");								// SetAlbum
-		System.out.print("Changes: " + editTest.getAlbum() + " "); 	// GetAlbum
+		// Edit Tests: Getters & Setters using SongCol.
+		Song editTest = SongCol.getSong("000005");
 		
-		editTest.setId("000001");									// SetId
-		System.out.print(editTest.getId() + " ");					// GetId
+		// Before Edits
+		System.out.println("Before Edits:\n" + editTest + "\n");
 		
-		editTest.setGenre("Indie");									// SetGenre
-		System.out.print(editTest.getGenre() + " ");				// GetGenre
+		editTest.setAlbum("NewAlb");									// SetAlbum
+		System.out.print("Changes: " + editTest.getAlbum() + " "); 		// GetAlbum
 		
-		editTest.setArtist("NEW Artist");							// SetArtist
-		System.out.print(editTest.getArtist() + " ");				// GetArtist
+		editTest.setId("000005");										// SetId
+		System.out.print(editTest.getId() + " ");						// GetId
+
+		editTest.setGenre("Indie");										// SetGenre
+		System.out.print(editTest.getGenre() + " ");					// GetGenre
 		
-		editTest.setLong(-73.2);									// SetLong
-		System.out.print(editTest.getLong() + " "); 				// GetLong
+		editTest.setArtist("NEW Artist");								// SetArtist
+		System.out.print(editTest.getArtist() + " ");					// GetArtist
 		
-		editTest.setTrack("TRACK NAME");							// SetTrack
-		System.out.print(editTest.getTrack() + " ");				// GetTrack
+		editTest.setLong(-73.2);										// SetLong
+		System.out.print(editTest.getLong() + " "); 					// GetLong
 		
-		editTest.setYear(2004);										// SetYear
-		System.out.println(editTest.getYear() + "\n");				// GetYear
+		editTest.setTrack("TRACK NAME");								// SetTrack
+		System.out.print(editTest.getTrack() + " ");					// GetTrack
 		
-		System.out.println("After Edits:\n" + testCol);			// After Edits
+		editTest.setYear(2004);											// SetYear
+		System.out.println(editTest.getYear() + "\n");					// GetYear
+		
+		// After Edits
+		System.out.println("After Edits:\n" + SongCol.getSong("000005") + "\n");
 
 		
 		// Iterator Test: Checks that the iterator works
