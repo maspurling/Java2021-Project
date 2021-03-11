@@ -26,17 +26,21 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollBar;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.JCheckBox;
+import javax.swing.JTextField;
+import javax.swing.JList;
 
 public class Gui extends JPanel{
 	private Collection SongCol;
+	private JTextArea textArea;
     
 	public Gui() {
 		SongCol = new Collection("./projectFrontEnd/finalTracks.csv");
-		
+		String [] genres = SongCol.getGenres();
 		setLayout(null);
 		setBackground(new Color(102, 205, 170));
-		setPreferredSize(new Dimension(700, 400));
+		setPreferredSize(new Dimension(1000, 400));
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(0, 0, 36, 22);
@@ -54,47 +58,78 @@ public class Gui extends JPanel{
 		mnFile.add(mntmExit);
 		
 		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(143, 106, 109, 22);
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Collection songs = SongCol.findSongByGenre(""+comboBox.getSelectedItem());
+				String toReturn = songs.toString();
+				textArea.setText(toReturn);
+			}
+		});
+		comboBox.setModel(new DefaultComboBoxModel(SongCol.getGenres()));
+		comboBox.setBounds(101, 97, 102, 22);
 		add(comboBox);
 		
 		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(143, 138, 109, 22);
+		comboBox_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Collection songs = SongCol.findSongByArtist(""+comboBox_1.getSelectedItem());
+				String toReturn = songs.toString();
+				textArea.setText(toReturn);
+			}
+		});
+		comboBox_1.setModel(new DefaultComboBoxModel(SongCol.getArtists()));
+		comboBox_1.setBounds(101, 130, 102, 22);
 		add(comboBox_1);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(484, 150, 89, 23);
-		add(btnNewButton);
+		JComboBox comboBox_2 = new JComboBox();
+		comboBox_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Song songs = SongCol.findSongByID(""+comboBox_2.getSelectedItem());
+				String toReturn = songs.toString();
+				textArea.setText(toReturn);
+			}
+		});
+		comboBox_2.setModel(new DefaultComboBoxModel(SongCol.getIds()));
+		comboBox_2.setBounds(101, 62, 102, 22);
+		add(comboBox_2);
 		
-		JButton btnNewButton_2 = new JButton("New button");
-		btnNewButton_2.setBounds(484, 218, 89, 23);
-		add(btnNewButton_2);
-		
-		JButton btnNewButton_3 = new JButton("New button");
-		btnNewButton_3.setBounds(484, 252, 89, 23);
-		add(btnNewButton_3);
-		
-		JTextArea textArea_1 = new JTextArea();
-		textArea_1.setBounds(58, 183, 308, 148);
-		add(textArea_1);
+		textArea = new JTextArea();
+		textArea.setBounds(36, 177, 697, 184);
+		add(textArea);
+	
 		
 		JLabel lblGenre = new JLabel("Genre:");
-		lblGenre.setBounds(83, 110, 46, 14);
+		lblGenre.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblGenre.setForeground(Color.WHITE);
+		lblGenre.setBounds(45, 100, 46, 14);
 		add(lblGenre);
 		
 		JLabel lblArtist = new JLabel("Artist:");
-		lblArtist.setBounds(83, 142, 46, 14);
+		lblArtist.setForeground(Color.WHITE);
+		lblArtist.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblArtist.setBounds(45, 133, 46, 14);
 		add(lblArtist);
 		
-		JSlider slider = new JSlider();
-		slider.setBounds(414, 303, 200, 26);
-		add(slider);
+		JLabel lblNewLabel = new JLabel("Id:");
+		lblNewLabel.setForeground(Color.WHITE);
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel.setBounds(45, 65, 18, 14);
+		add(lblNewLabel);
 		
-		JToggleButton tglbtnNewToggleButton = new JToggleButton("New toggle button");
-		tglbtnNewToggleButton.setBounds(469, 67, 121, 23);
-		add(tglbtnNewToggleButton);
+		JButton btnEditSong = new JButton("Edit Song");
+		btnEditSong.setBounds(769, 255, 121, 23);
+		add(btnEditSong);
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("New check box");
-		chckbxNewCheckBox.setBounds(327, 106, 97, 23);
-		add(chckbxNewCheckBox);
+		JToggleButton tglbtnPlaypause = new JToggleButton("Play/Pause");
+		tglbtnPlaypause.setBounds(231, 96, 121, 23);
+		add(tglbtnPlaypause);
+		
+		JButton btnAddSong = new JButton("Add Song");
+		btnAddSong.setBounds(769, 215, 121, 23);
+		add(btnAddSong);
+		
+		JButton btnRemoveSong = new JButton("Remove Song");
+		btnRemoveSong.setBounds(769, 295, 121, 23);
+		add(btnRemoveSong);
 	}
 }

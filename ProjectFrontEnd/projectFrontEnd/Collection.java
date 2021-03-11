@@ -15,10 +15,15 @@ public class Collection {
 	private ArrayList<Song> list;
 	private String fileName;
 	private TreeSet<String> genres;
+	private TreeSet<String> artist;
+	private TreeSet<String> ids;
 	
 	// Default Constructor
 	public Collection() {
 		list = new ArrayList<Song>();
+		genres = new TreeSet<String>();
+		ids = new TreeSet<String>();
+		artist = new TreeSet<String>();
 		fileName = null;
 	}
 	
@@ -43,6 +48,28 @@ public class Collection {
 		String[] toReturn = new String[genres.size()];
 		int index = 0;
 		for (String s : genres) {
+			toReturn[index] = s;
+			index++;
+		}
+		return toReturn;
+	}
+	
+	// Returns array of all Genres(Strings)
+	public String[] getArtists () {
+		String[] toReturn = new String[artist.size()];
+		int index = 0;
+		for (String s : artist) {
+			toReturn[index] = s;
+			index++;
+		}
+		return toReturn;
+	}
+	
+	// Returns array of all Genres(Strings)
+	public String[] getIds () {
+		String[] toReturn = new String[ids.size()];
+		int index = 0;
+		for (String s : ids) {
 			toReturn[index] = s;
 			index++;
 		}
@@ -312,7 +339,10 @@ public class Collection {
 			while ((line = lineReader.readLine())!=null) {
 				// Split line into tokens and then call addSong with the tokens
 				String[] tokens = line.split(",");
-				add(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
+				genres.add(tokens[2]);
+				artist.add(tokens[1]);
+				ids.add(tokens[0]);
+				this.add(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
 			}
 		} catch (Exception e) {
 			System.err.println("there was a problem with the file reader, try different read type.");
@@ -321,7 +351,10 @@ public class Collection {
 				String line = null;
 				while ((line = lineReader.readLine())!=null) {
 					String[] tokens = line.split(",");
-					add(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
+					genres.add(tokens[2]);
+					artist.add(tokens[1]);
+					ids.add(tokens[0]);
+					this.add(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
 				}
 			} catch (Exception e2) {
 				System.err.println("there was a problem with the file reader, try again.  either no such file or format error");
