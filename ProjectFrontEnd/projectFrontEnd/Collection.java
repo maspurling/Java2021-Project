@@ -14,6 +14,7 @@ import java.util.*;
 public class Collection {
 	private ArrayList<Song> list;
 	private String fileName;
+	private TreeSet<String> genres;
 	
 	// Default Constructor
 	public Collection() {
@@ -28,19 +29,24 @@ public class Collection {
 		readFile();
 	}
 	
-	// Adds song
-	public void addSong(Song s) {
+	// Add Song to Collection
+	public void add (Song s) {
 		this.list.add(s);
 	}
+	// Remove Song from Collection
+	public void remove (Song s) {
+		list.remove(s);
+	}
 	
-	// Remove a Song based on ID
-	public void removeSong(String i) {
-		for (Song s : list) {
-			if (s.getId().equals(i)) {
-				this.list.remove(s);
-				return;
-			}
+	// Returns array of all Genres(Strings)
+	public String[] getGenres () {
+		String[] toReturn = new String[genres.size()];
+		int index = 0;
+		for (String s : genres) {
+			toReturn[index] = s;
+			index++;
 		}
+		return toReturn;
 	}
 	
 	// Return an iterator for list
@@ -48,57 +54,243 @@ public class Collection {
 		return list.iterator();
 	}
 	
-	// Get a Song based on Id
-	public Song getSong (String i) {
-		for (Song s : list) {
-			if (s.getId().equals(i)) {
-				Song toReturn = s;
-				return toReturn;
+	// Returns whether Collection is Empty
+	public boolean empty () {
+		return list.isEmpty();
+	}
+	
+	// Returns number of Songs in Collection
+	public int size () {
+		return list.size();
+	}
+	
+	//Return first element in Collection
+	public Song returnFirst () {
+		if (empty())
+			return null;
+		
+		return list.get(0);
+	}
+	
+	// Returns whether or not Collection contains song.
+	public boolean contains (Song song) {
+		if (list.contains(song))
+			return true;
+		
+		else
+			return false;
+	}
+	
+	// Combine two collections together.
+	public Collection addAll (Collection rhs) {
+		if (rhs.empty())
+			return this;
+		Iterator<Song> iterator = rhs.getIterator();
+		while (iterator.hasNext()) {
+			Song song = iterator.next();
+			this.add(song);
+		}
+		
+		return this;
+	}
+	
+	
+	// Finds Song based on ID
+	public Song findSongByID (String id) {
+		Iterator<Song> iterator = this.getIterator();
+		while (iterator.hasNext()) {
+			Song song = iterator.next();
+			if (song.getId().equals(id)) {
+				return song;
 			}
 		}
 		return null;
 	}
 	
-	// Suggest a song based on artist
-	public Song InputOneToOne(String a) {
-		for (Song s : list) {
-			if (s.getArtist().equals(a)) {
-				return s;
+	// Finds Song(s) based on Artist
+	public Collection findSongByArtist (String artist) {
+		Collection results = new Collection();
+		Iterator<Song> iterator = this.getIterator();
+
+		// Iterate through allSongs
+		while (iterator.hasNext()) {
+			Song song = iterator.next();
+
+			// Find only values with matching artist name
+			if (song.getArtist().equals(artist)) {
+				results.add(song);
 			}
 		}
+		return results;
+	}
+	
+	// Finds Song(s) based on Genre
+	public Collection findSongByGenre (String genre) {
+		Collection results = new Collection();
+		Iterator<Song> iterator = this.getIterator();
+
+		// Iterate through allSongs
+		while (iterator.hasNext()) {
+			Song song = iterator.next();
+
+			// Find only values with matching artist name
+			if (song.getGenre().equals(genre)) {
+				results.add(song);
+			}
+		}
+		return results;
+	}
+	
+	// Suggests Song, one input one output
+	public Song suggestSong_1I1O (Song song) {
+		Collection sameGenre = new Collection();
+		Collection sameArtistandGenre = new Collection();
+		
+		sameGenre.addAll(this.findSongByGenre(song.getGenre()));
+		sameArtistandGenre.addAll(sameGenre.findSongByArtist(song.getArtist()));
+		
+		if (sameArtistandGenre.size() > 1)
+		{
+			sameArtistandGenre.remove(song);
+			return sameArtistandGenre.returnFirst();
+		}
+		
+		else if (sameGenre.size() > 1)
+		{
+			sameGenre.remove(song);
+			return sameGenre.returnFirst();
+		}
+		
+		return song;
+	}
+	
+	// Suggests Song, one input multiple output
+	public Collection suggestSong_1IMO (Song song) {
+		Collection sameGenre = new Collection();
+		Collection sameArtistandGenre = new Collection();
+		
+		sameGenre.addAll(this.findSongByGenre(song.getGenre()));
+		sameArtistandGenre.addAll(sameGenre.findSongByArtist(song.getArtist()));
+		
+		if (sameArtistandGenre.size() > 2)
+		{
+			sameArtistandGenre.remove(song);
+			return sameArtistandGenre;
+		}
+		
+		else if (sameGenre.size() > 2)
+		{
+			sameGenre.remove(song);
+			return sameGenre;
+		}
+		
+		else if (sameArtistandGenre.size() == 2)
+		{
+			sameArtistandGenre.remove(song);
+			return sameGenre;
+		}
+		
+		else if (sameGenre.size() == 2)
+		{
+			sameGenre.remove(song);
+			return sameGenre;
+		}
+		
+		return sameGenre;
+	}
+
+	// Suggests Song, multiple input one output
+	public Song suggestSong_MI1O (Collection collection) {
+		Song na = new Song();
+		Collection sameGenre = new Collection();
+		
+		Iterator<Song> iterator = collection.getIterator();
+		while (iterator.hasNext())
+		{
+			Song song = iterator.next();
+			sameGenre.addAll(this.findSongByGenre(song.getGenre()));
+
+		}
+		
+		Collection sameArtistandGenre = new Collection();
+		
+		Iterator<Song> iterator2 = collection.getIterator();
+		while (iterator2.hasNext())
+		{
+			Song song = iterator2.next();
+			sameArtistandGenre.addAll(sameGenre.findSongByArtist(song.getArtist()));
+
+		}
+		
+		Iterator<Song> iterator3 = collection.getIterator();
+		while (iterator3.hasNext())
+		{
+			Song song = iterator3.next();
+			if (sameGenre.contains(song))
+				sameGenre.remove(song);
+			if (sameArtistandGenre.contains(song))
+				sameArtistandGenre.remove(song);
+		}
+	
+		if (sameArtistandGenre.size() > 0)
+		{
+			return sameArtistandGenre.returnFirst();
+		}
+		
+		else if (sameGenre.size() > 0)
+		{
+			return sameGenre.returnFirst();
+		}
+		
+		return na;
+		
+	}
+
+	// Suggests Song, multiple input multiple output
+	public Collection suggestSong_MIMO (Collection collection) {
+		Collection sameGenre = new Collection();
+		
+		Iterator<Song> iterator = collection.getIterator();
+		while (iterator.hasNext())
+		{
+			Song song = iterator.next();
+			sameGenre.addAll(this.findSongByGenre(song.getGenre()));
+
+		}
+		
+		Collection sameArtistandGenre = new Collection();
+		
+		Iterator<Song> iterator2 = sameGenre.getIterator();
+		while (iterator2.hasNext())
+		{
+			Song song = iterator2.next();
+			sameArtistandGenre.addAll(sameGenre.addAll(findSongByArtist(song.getArtist())));
+
+		}
+		
+		Iterator<Song> iterator3 = collection.getIterator();
+		while (iterator3.hasNext())
+		{
+			Song song = iterator3.next();
+			if (sameGenre.contains(song))
+				sameGenre.remove(song);
+			if (sameArtistandGenre.contains(song))
+				sameGenre.remove(song);
+		}
+	
+		
+		if (sameArtistandGenre.size() > 0)
+		{
+			return sameArtistandGenre;
+		}
+		
+		else if (sameGenre.size() > 0)
+		{
+			return sameGenre;
+		}
+		
 		return null;
-	}
-	
-	// Suggest a song based on artist and album
-	public Song InputManyToOne(String a, String b) {
-		for (Song s : list) {
-			if (s.getArtist().equals(a) && s.getAlbum().equals(b)) {
-				return s;
-			}
-		}
-		return null;
-	}
-	
-	// Suggest many songs based on genre
-	public Collection InputOneToMany(String g) {
-		Collection toReturn = new Collection();
-		for (Song s: list) {
-			if (s.getGenre().equals(g)) {
-				toReturn.addSong(s);
-			}
-		}
-		return toReturn;
-	}
-	
-	// Suggest many songs based on genre and year
-	public Collection InputManyToMany(String g, int y) {
-		Collection toReturn = new Collection();
-		for (Song s : list) {
-			if (s.getGenre().equals(g) && s.getYear() == y) {
-				toReturn.addSong(s);
-			}
-		}
-		return toReturn;
+		
 	}
 	
 	// toString method since every class needs one
@@ -120,7 +312,7 @@ public class Collection {
 			while ((line = lineReader.readLine())!=null) {
 				// Split line into tokens and then call addSong with the tokens
 				String[] tokens = line.split(",");
-				addSong(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
+				add(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
 			}
 		} catch (Exception e) {
 			System.err.println("there was a problem with the file reader, try different read type.");
@@ -129,7 +321,7 @@ public class Collection {
 				String line = null;
 				while ((line = lineReader.readLine())!=null) {
 					String[] tokens = line.split(",");
-					addSong(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
+					add(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
 				}
 			} catch (Exception e2) {
 				System.err.println("there was a problem with the file reader, try again.  either no such file or format error");
