@@ -14,16 +14,10 @@ import java.util.*;
 public class Collection {
 	private ArrayList<Song> list;
 	private String fileName;
-	private TreeSet<String> genres;
-	private TreeSet<String> artist;
-	private TreeSet<String> ids;
 	
 	// Default Constructor
 	public Collection() {
 		list = new ArrayList<Song>();
-		genres = new TreeSet<String>();
-		ids = new TreeSet<String>();
-		artist = new TreeSet<String>();
 		fileName = null;
 	}
 	
@@ -43,34 +37,45 @@ public class Collection {
 		list.remove(s);
 	}
 	
+	// Returns array of all Songs(Strings)
+	public String[] getSongs () {
+		String[] toReturn = new String[list.size()];
+		int index = 0;
+		for (Song s : list) {
+			toReturn[index] = s.toString();
+			index++;
+		}
+		return toReturn;
+	}
+	
 	// Returns array of all Genres(Strings)
 	public String[] getGenres () {
-		String[] toReturn = new String[genres.size()];
+		String[] toReturn = new String[list.size()];
 		int index = 0;
-		for (String s : genres) {
-			toReturn[index] = s;
+		for (Song s : list) {
+			toReturn[index] = s.getGenre();
 			index++;
 		}
 		return toReturn;
 	}
 	
-	// Returns array of all Genres(Strings)
+	// Returns array of all Artists(Strings)
 	public String[] getArtists () {
-		String[] toReturn = new String[artist.size()];
+		String[] toReturn = new String[list.size()];
 		int index = 0;
-		for (String s : artist) {
-			toReturn[index] = s;
+		for (Song s : list) {
+			toReturn[index] = s.getArtist();
 			index++;
 		}
 		return toReturn;
 	}
 	
-	// Returns array of all Genres(Strings)
+	// Returns array of all Ids(Strings)
 	public String[] getIds () {
-		String[] toReturn = new String[ids.size()];
+		String[] toReturn = new String[list.size()];
 		int index = 0;
-		for (String s : ids) {
-			toReturn[index] = s;
+		for (Song s : list) {
+			toReturn[index] = s.getId();
 			index++;
 		}
 		return toReturn;
@@ -339,9 +344,6 @@ public class Collection {
 			while ((line = lineReader.readLine())!=null) {
 				// Split line into tokens and then call addSong with the tokens
 				String[] tokens = line.split(",");
-				genres.add(tokens[2]);
-				artist.add(tokens[1]);
-				ids.add(tokens[0]);
 				this.add(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
 			}
 		} catch (Exception e) {
@@ -351,9 +353,6 @@ public class Collection {
 				String line = null;
 				while ((line = lineReader.readLine())!=null) {
 					String[] tokens = line.split(",");
-					genres.add(tokens[2]);
-					artist.add(tokens[1]);
-					ids.add(tokens[0]);
 					this.add(new Song(tokens[0],tokens[1],tokens[2],tokens[3],tokens[4],Integer.parseInt(tokens[5]),Double.parseDouble(tokens[6])));
 				}
 			} catch (Exception e2) {

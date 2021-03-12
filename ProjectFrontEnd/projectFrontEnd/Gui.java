@@ -13,6 +13,7 @@ import projectFrontEnd.Collection;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
@@ -30,23 +31,32 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JList;
+import javax.swing.ListSelectionModel;
+import javax.swing.AbstractListModel;
+import javax.swing.ImageIcon;
 
 public class Gui extends JPanel{
 	private Collection SongCol;
-	private JTextArea textArea;
+	private JList SongDisplay;
+	private JComboBox IdInput;
+	private JComboBox GenreInput;
+	private JComboBox ArtistInput;
+	private JLabel cSong;
     
 	public Gui() {
 		SongCol = new Collection("./projectFrontEnd/finalTracks.csv");
-		String [] genres = SongCol.getGenres();
 		setLayout(null);
-		setBackground(new Color(102, 205, 170));
-		setPreferredSize(new Dimension(1000, 400));
+		setBackground(new Color(188, 143, 143));
+		setPreferredSize(new Dimension(649, 411));
 		
+		// Menu
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 36, 22);
+		menuBar.setBackground(new Color(255, 255, 255));
+		menuBar.setBounds(0, 0, 103, 22);
 		add(menuBar);
 		
 		JMenu mnFile = new JMenu("File");
+		mnFile.setBackground(new Color(176, 224, 230));
 		menuBar.add(mnFile);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
@@ -57,79 +67,211 @@ public class Gui extends JPanel{
 		});
 		mnFile.add(mntmExit);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.addActionListener(new ActionListener() {
+		JMenu mnEdit = new JMenu("Edit Song");
+		menuBar.add(mnEdit);
+		
+		JMenuItem mntmEditId = new JMenuItem("Edit Id");
+		mntmEditId.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Collection songs = SongCol.findSongByGenre(""+comboBox.getSelectedItem());
-				String toReturn = songs.toString();
-				textArea.setText(toReturn);
+				boolean isError = true;
+				do {
+					try {
+						String newId = JOptionPane.showInputDialog("Sample Id: 000000\n\nNew Id: ");
+						if (newId.length() == 6) {
+							isError = false;
+							String song = (String)SongDisplay.getSelectedValue();
+							String[] tokens = song.split(" ");
+							SongCol.findSongByID(tokens[0]).setId(newId);
+							IdInput.setModel(new DefaultComboBoxModel(SongCol.getIds()));
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "Something went wrong. Please enter Id EXACTLY like sample.");
+						}
+					} catch (Exception x) {
+						continue;
+					}
+				} while (isError);
 			}
 		});
-		comboBox.setModel(new DefaultComboBoxModel(SongCol.getGenres()));
-		comboBox.setBounds(101, 97, 102, 22);
-		add(comboBox);
+		mnEdit.add(mntmEditId);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.addActionListener(new ActionListener() {
+		JMenuItem mntmEditArtist = new JMenuItem("Edit Artist");
+		mntmEditArtist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Collection songs = SongCol.findSongByArtist(""+comboBox_1.getSelectedItem());
-				String toReturn = songs.toString();
-				textArea.setText(toReturn);
+				boolean isError = true;
+				do {
+					try {
+						String newArt = JOptionPane.showInputDialog("Sample Artist: Halsey\n\nNew Artist: ");
+						isError = false;
+						String song = (String)SongDisplay.getSelectedValue();
+						String[] tokens = song.split(" ");
+						SongCol.findSongByID(tokens[0]).setArtist(newArt);
+						ArtistInput.setModel(new DefaultComboBoxModel(SongCol.getArtists()));
+					} catch (Exception x) {
+						continue;
+					}
+				} while (isError);
 			}
 		});
-		comboBox_1.setModel(new DefaultComboBoxModel(SongCol.getArtists()));
-		comboBox_1.setBounds(101, 130, 102, 22);
-		add(comboBox_1);
+		mnEdit.add(mntmEditArtist);
 		
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.addActionListener(new ActionListener() {
+		// Comboboxes
+		GenreInput = new JComboBox();
+		GenreInput.setForeground(new Color(188, 143, 143));
+		GenreInput.setBackground(new Color(255, 255, 255));
+		GenreInput.setModel(new DefaultComboBoxModel(SongCol.getGenres()));
+		GenreInput.setSelectedIndex(0);
+		GenreInput.setToolTipText(GenreInput.getSelectedItem().toString());
+		GenreInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Song songs = SongCol.findSongByID(""+comboBox_2.getSelectedItem());
-				String toReturn = songs.toString();
-				textArea.setText(toReturn);
+				GenreInput.setToolTipText(GenreInput.getSelectedItem().toString());
+				SongDisplay.setModel(new AbstractListModel() {
+					Collection songs = SongCol.findSongByGenre(""+GenreInput.getSelectedItem());
+					String[] values = songs.getSongs();
+					public int getSize() {
+						return values.length;
+					}
+					public Object getElementAt(int index) {
+						return values[index];
+					}
+				});
 			}
 		});
-		comboBox_2.setModel(new DefaultComboBoxModel(SongCol.getIds()));
-		comboBox_2.setBounds(101, 62, 102, 22);
-		add(comboBox_2);
+
+		GenreInput.setBounds(25, 108, 160, 22);
+		add(GenreInput);
 		
-		textArea = new JTextArea();
-		textArea.setBounds(36, 177, 697, 184);
-		add(textArea);
+		ArtistInput = new JComboBox();
+		ArtistInput.setForeground(new Color(188, 143, 143));
+		ArtistInput.setBackground(new Color(255, 255, 255));
+		ArtistInput.setModel(new DefaultComboBoxModel(SongCol.getArtists()));
+		ArtistInput.setSelectedIndex(0);
+		ArtistInput.setToolTipText(ArtistInput.getSelectedItem().toString());
+		ArtistInput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ArtistInput.setToolTipText(ArtistInput.getSelectedItem().toString());
+				SongDisplay.setModel(new AbstractListModel() {
+					Collection songs = SongCol.findSongByArtist(""+ArtistInput.getSelectedItem());
+					String[] values = songs.getSongs();
+					public int getSize() {
+						return values.length;
+					}
+					public Object getElementAt(int index) {
+						return values[index];
+					}
+				});
+			}
+		});
+		ArtistInput.setBounds(25, 162, 160, 22);
+		add(ArtistInput);
+		
+		IdInput = new JComboBox();
+		IdInput.setForeground(new Color(188, 143, 143));
+		IdInput.setBackground(new Color(255, 255, 255));
+		IdInput.setModel(new DefaultComboBoxModel(SongCol.getIds()));
+		IdInput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//IdInput.setModel(new DefaultComboBoxModel(SongCol.getIds()));
+				SongDisplay.setModel(new AbstractListModel() {
+					String song = SongCol.findSongByID(""+IdInput.getSelectedItem()).toString();
+					public int getSize() {
+						return 1;
+					}
+					public Object getElementAt(int index) {
+						return song;
+					}
+				});
+			}
+		});
+		IdInput.setBounds(25, 54, 160, 22);
+		add(IdInput);
 	
+		// ScrollPane
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(25, 205, 600, 185);
+		add(scrollPane);
 		
-		JLabel lblGenre = new JLabel("Genre:");
-		lblGenre.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblGenre.setForeground(Color.WHITE);
-		lblGenre.setBounds(45, 100, 46, 14);
-		add(lblGenre);
+		SongDisplay = new JList();
+		SongDisplay.setBackground(new Color(255, 255, 255));
+		scrollPane.setViewportView(SongDisplay);
 		
-		JLabel lblArtist = new JLabel("Artist:");
-		lblArtist.setForeground(Color.WHITE);
-		lblArtist.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblArtist.setBounds(45, 133, 46, 14);
-		add(lblArtist);
+		JLabel GenreLabel = new JLabel("Genre:");
+		GenreLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
+		GenreLabel.setForeground(Color.WHITE);
+		GenreLabel.setBounds(25, 87, 46, 14);
+		add(GenreLabel);
 		
-		JLabel lblNewLabel = new JLabel("Id:");
-		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel.setBounds(45, 65, 18, 14);
-		add(lblNewLabel);
+		JLabel ArtistLabel = new JLabel("Artist:");
+		ArtistLabel.setForeground(Color.WHITE);
+		ArtistLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
+		ArtistLabel.setBounds(25, 141, 46, 14);
+		add(ArtistLabel);
 		
-		JButton btnEditSong = new JButton("Edit Song");
-		btnEditSong.setBounds(769, 255, 121, 23);
-		add(btnEditSong);
+		JLabel IdLabel = new JLabel("Id:");
+		IdLabel.setForeground(Color.WHITE);
+		IdLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
+		IdLabel.setBounds(25, 33, 18, 14);
+		add(IdLabel);
 		
-		JToggleButton tglbtnPlaypause = new JToggleButton("Play/Pause");
-		tglbtnPlaypause.setBounds(231, 96, 121, 23);
-		add(tglbtnPlaypause);
+		JToggleButton PlayPause = new JToggleButton("Play/Pause");
+		PlayPause.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String song = (String)SongDisplay.getSelectedValue();
+				cSong.setText(song);
+			}
+		});
+		PlayPause.setForeground(new Color(255, 255, 255));
+		PlayPause.setBackground(new Color(188, 143, 143));
+		PlayPause.setBounds(371, 107, 121, 23);
+		add(PlayPause);
 		
-		JButton btnAddSong = new JButton("Add Song");
-		btnAddSong.setBounds(769, 215, 121, 23);
-		add(btnAddSong);
+		JButton AddSong = new JButton("Add Song");
+		AddSong.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String newId = JOptionPane.showInputDialog("Sample Id: 000000\n\nNew Id: ");
+				String newArt = JOptionPane.showInputDialog("Sample Artist: Artist\n\nNew Artist: ");
+				String newGen = JOptionPane.showInputDialog("Sample Genre: Pop\n\nNew Genre: ");
+				String newTrack = JOptionPane.showInputDialog("Sample Track: Track\n\nNew Track: ");
+				String newAlb = JOptionPane.showInputDialog("Sample Album: Album\n\nNew Album: ");
+				String newYe = JOptionPane.showInputDialog("Sample Year: 0000\n\nNew Year: ");
+				int Ye = Integer.parseInt(newYe);
+				String newLo = JOptionPane.showInputDialog("Sample Longitude: 0.0\n\nNew Longitude: ");
+				double Lo = Double.parseDouble(newLo);
+				Song s = new Song(newId, newArt, newGen, newTrack, newAlb, Ye, Lo);
+				SongCol.add(s);
+				ArtistInput.setModel(new DefaultComboBoxModel(SongCol.getArtists()));
+				IdInput.setModel(new DefaultComboBoxModel(SongCol.getIds()));
+				GenreInput.setModel(new DefaultComboBoxModel(SongCol.getGenres()));
+			}
+		});
+		AddSong.setBackground(new Color(188, 143, 143));
+		AddSong.setForeground(new Color(255, 255, 255));
+		AddSong.setBounds(285, 161, 121, 23);
+		add(AddSong);
 		
-		JButton btnRemoveSong = new JButton("Remove Song");
-		btnRemoveSong.setBounds(769, 295, 121, 23);
-		add(btnRemoveSong);
+		JButton RemoveSong = new JButton("Remove Song");
+		RemoveSong.setBackground(new Color(188, 143, 143));
+		RemoveSong.setForeground(new Color(255, 255, 255));
+		RemoveSong.setBounds(463, 161, 121, 23);
+		add(RemoveSong);
+		
+		cSong = new JLabel("No Song Selected");
+		cSong.setForeground(Color.WHITE);
+		cSong.setFont(new Font("Tahoma", Font.BOLD, 15));
+		cSong.setBounds(279, 59, 346, 18);
+		add(cSong);
+		
+		JLabel Current = new JLabel("Currently Playing:");
+		Current.setForeground(Color.WHITE);
+		Current.setFont(new Font("Tahoma", Font.BOLD, 16));
+		Current.setBounds(362, 30, 147, 18);
+		add(Current);
+		
+		JLabel label = new JLabel("");
+		label.setIcon(new ImageIcon(Gui.class.getResource("/projectFrontEnd/m.png")));
+		label.setBounds(236, 54, 21, 31);
+		add(label);
+		
+
 	}
 }
